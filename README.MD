@@ -39,3 +39,17 @@ Install the required packages using pip:
 ```bash
 pip install opencv-python-headless numpy
 ```
+
+## Example use
+
+```
+python3 nord_wall.py image.jpg --out out_dir --k 5 --b
+```
+
+do
+
+```
+python3 nord_wall.py --h
+```
+
+for all necessary information about using the script
