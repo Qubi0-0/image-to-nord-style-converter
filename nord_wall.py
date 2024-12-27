@@ -4,6 +4,8 @@ import sys
 import cv2 as cv
 import numpy as np
 from tkinter import Tk, filedialog
+import os
+
 
 sys.path.append(str(Path(__file__).resolve().parent / 'scripts'))
 
@@ -25,9 +27,12 @@ def main():
     frame = np.zeros((1200, 1600, 3), np.uint8)
 
     img_path = ""
+    processed_proxy_image = None
     processed_image = None
     blurr = [False]
     trackbarValue = [int(0)]
+    processed = False
+
 
     while True:
         frame[:] = (49, 52, 49)
@@ -37,25 +42,33 @@ def main():
             img_path = select_file()
             if img_path:
                 original_image = cv.imread(img_path)
-                original_image = cv.resize(original_image, (400, 300))
-                cvui.image(frame, 10, 100, original_image)
+                proxy_image = cv.resize(original_image, (400, 300))
+                cvui.image(frame, 10, 100, proxy_image)
 
-        cvui.checkbox(frame, 200, 160, 'Blurr', blurr)
+        if cvui.button(frame, 120, 50, 'Save Image'):
+            processed_image = make_nord(original_image, k, blurr[0])
+            file_name = os.path.basename(img_path)
+            print("Saving image!")
+            new_image_rgb = cv.cvtColor(processed_image, cv.COLOR_RGB2BGR)
+            cv.imwrite(f"{Path(".")}/nord-{file_name}", new_image_rgb)
 
-        cvui.trackbar(frame, 420, 110, 150, trackbarValue, int(1), int(5))
+
+        cvui.checkbox(frame, 500, 160, 'Blurr', blurr)
+
+        cvui.trackbar(frame, 500, 110, 150, trackbarValue, int(1), int(5))
 
         if img_path and cvui.button(frame, 10, 450, 'Process Image'):
-            out_path = Path(".")
             k = int(trackbarValue[0])
-            processed_image = cv.imread(f"{out_path}/nord-{Path(img_path).name}")
-            processed_proxy_image = cv.resize(processed_image, (400, 300))
-            make_nord(Path(img_path), out_path, k, False)
-            cvui.image(frame, 2 * 420 + 100, 100, processed_image)
+            processed_proxy_image = make_nord(proxy_image, k, blurr[0])
+            processed = True
+            if processed:
+                processed_proxy_image = cv.cvtColor(processed_proxy_image, cv.COLOR_RGB2BGR)
+                cvui.image(frame, 2 * 420 + 100, 100, processed_proxy_image)
 
         if img_path:
             original_image = cv.imread(img_path)
             proxy_image = cv.resize(original_image, (400, 300))
-            cvui.image(frame, 10, 100, original_image)
+            cvui.image(frame, 10, 100, proxy_image)
 
         if processed_image is not None:
             cvui.image(frame, 420, 100, processed_image)
