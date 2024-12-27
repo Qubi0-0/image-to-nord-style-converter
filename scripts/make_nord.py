@@ -24,7 +24,7 @@ def animate_dots():
             print(f'\rProcessing{dots}', end='', flush=True)
             time.sleep(0.5)
             
-def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool):
+def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool, proxy = False):
     global done 
     image = cv.imread(img_path)
     image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -62,6 +62,13 @@ def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool):
     file_name = os.path.basename(img_path)
     print("Saving image!")
     new_image_rgb = cv.cvtColor(new_image, cv.COLOR_RGB2BGR)
-    cv.imwrite(f"{out_path}/nord-{file_name}", new_image_rgb)
+    
 
-    return new_image
+    if proxy:
+        out_file_dir = f"{out_path}/proxy-nord-{file_name}"
+    else:
+        out_file_dir = f"{out_path}/nord-{file_name}"
+
+    cv.imwrite(out_file_dir, new_image_rgb)
+
+    return out_file_dir
