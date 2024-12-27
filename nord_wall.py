@@ -31,6 +31,8 @@ def main():
     blurr = [False]
     trackbarValue = [int(0)]
 
+    color_centers = None
+
     img_path = ""
     out_path = ""
     proxy_img_dir = ""
@@ -60,6 +62,7 @@ def main():
             os.remove(proxy_in_path)
             proxy_in_path = ""
             proxy_out_path = ""
+            img_path = ""
 
 
         cvui.checkbox(frame, 290, 50, 'Blurr', blurr)
@@ -90,3 +93,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
