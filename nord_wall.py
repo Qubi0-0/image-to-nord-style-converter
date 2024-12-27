@@ -24,14 +24,18 @@ def main():
     # Initialize cvui and create/open a OpenCV window.
     cvui.init(WINDOW_NAME)
     # Create a frame to render components to.
-    frame = np.zeros((1200, 1600, 3), np.uint8)
+    frame = np.zeros((600, 1200, 3), np.uint8)
 
-    img_path = ""
     processed_proxy_image = None
     processed_image = None
     blurr = [False]
     trackbarValue = [int(0)]
-    processed = False
+
+    img_path = ""
+    out_path = ""
+    proxy_img_dir = ""
+    proxy_in_path = ""
+    proxy_out_path = ""
 
 
     while True:
@@ -43,27 +47,33 @@ def main():
             if img_path:
                 original_image = cv.imread(img_path)
                 proxy_image = cv.resize(original_image, (400, 300))
+                proxy_in_path = Path(f"./proxy-{os.path.basename(img_path)}")
+                cv.imwrite(proxy_in_path, proxy_image)
                 cvui.image(frame, 10, 100, proxy_image)
 
-        if cvui.button(frame, 120, 50, 'Save Image'):
-            processed_image = make_nord(original_image, k, blurr[0])
-            file_name = os.path.basename(img_path)
-            print("Saving image!")
-            new_image_rgb = cv.cvtColor(processed_image, cv.COLOR_RGB2BGR)
-            cv.imwrite(f"{Path(".")}/nord-{file_name}", new_image_rgb)
+        if proxy_out_path and cvui.button(frame, 150, 50, 'Save Image'):
+            k = int(trackbarValue[0])
+            out_path = Path(".")
+            _ = make_nord(img_path, out_path, k, blurr[0])
+            os.remove(proxy_img_dir)
+            proxy_img_dir = ""
+            os.remove(proxy_in_path)
+            proxy_in_path = ""
+            proxy_out_path = ""
 
 
-        cvui.checkbox(frame, 500, 160, 'Blurr', blurr)
+        cvui.checkbox(frame, 290, 50, 'Blurr', blurr)
 
-        cvui.trackbar(frame, 500, 110, 150, trackbarValue, int(1), int(5))
+        cvui.trackbar(frame, 360, 50, 150, trackbarValue, int(1), int(5))
 
         if img_path and cvui.button(frame, 10, 450, 'Process Image'):
             k = int(trackbarValue[0])
-            processed_proxy_image = make_nord(proxy_image, k, blurr[0])
-            processed = True
-            if processed:
-                processed_proxy_image = cv.cvtColor(processed_proxy_image, cv.COLOR_RGB2BGR)
-                cvui.image(frame, 2 * 420 + 100, 100, processed_proxy_image)
+            proxy_out_path = Path(".")
+            proxy_img_dir = make_nord(proxy_in_path, proxy_out_path, k, blurr[0], proxy = True)
+    
+        if proxy_out_path:
+            processed_proxy_image = cv.imread(proxy_img_dir)
+            cvui.image(frame, 500, 100, processed_proxy_image)
 
         if img_path:
             original_image = cv.imread(img_path)
