@@ -54,10 +54,14 @@ def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool):
     new_image = np.array([replacement_map[label] for label in labels.flatten()])
     new_image = new_image.reshape(image.shape).astype(np.uint8)
 
+
+
     if blurr:
         new_image = cv.GaussianBlur(new_image,(3,3),0)
 
     file_name = os.path.basename(img_path)
     print("Saving image!")
-    new_image = cv.cvtColor(new_image, cv.COLOR_RGB2BGR)
-    cv.imwrite(f"{out_path}/nord-{file_name}", new_image)
+    new_image_rgb = cv.cvtColor(new_image, cv.COLOR_RGB2BGR)
+    cv.imwrite(f"{out_path}/nord-{file_name}", new_image_rgb)
+
+    return new_image
