@@ -1,6 +1,10 @@
 # Nord Image Converter
 
-This script allows you to convert any picture to a nord style. Choose k (from 2 to 5), and specify the input image and output path. Since the image is quantized, blur helps to soften edges of the output image.
+This script allows you to convert any picture to a nord style. Choose colors and see preview before finall image! Since the image is quantized, blur helps to soften edges of the output image. Be aware that the final image might differ from preview since preview is resised version of your full image!
+
+## UI
+
+![alt text](showcase/ui.png)
 
 ## Showcase
 
@@ -31,25 +35,20 @@ This script allows you to convert any picture to a nord style. Choose k (from 2 
 - Python 3.x
 - OpenCV
 - NumPy
+- cvui
+
+Install them as you wish :D
 
 ## Installation
 
 Install the required packages using pip:
 
 ```bash
-pip install opencv-python-headless numpy
+pip install opencv-python-headless opencv-python numpy cvui
 ```
 
-## Example use
+## Run
 
 ```
-python3 nord_wall.py image.jpg --out out_dir --k 5 --b
+python3 nord_wall.py
 ```
-
-do
-
-```
-python3 nord_wall.py --h
-```
-
-for all necessary information about using the script

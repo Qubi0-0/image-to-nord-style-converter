@@ -1,111 +1,124 @@
-import os
+import cvui
+from pathlib import Path
+import sys
 import cv2 as cv
 import numpy as np
-from argparse import ArgumentParser
-from pathlib import Path
-import threading
-import time
+from tkinter import Tk, filedialog
+import os
 
+sys.path.append(str(Path(__file__).resolve().parent / 'scripts'))
 
-"""
-Used colors for the script
-#2e3440 → (46, 52, 64)
-#3b4252 → (59, 66, 82)
-#434c5e → (67, 76, 94)
-#4c566a → (76, 86, 106) 
-#1D252F → (29, 37, 47)
-#81A1C1 → (129, 161, 193)
-#ECEFF4 → (236, 239, 244)
-"""
+from make_nord import make_nord
 
-done = False
-
-
-def animate_dots():
-    while not done:
-        for dots in ['.', '..', '...']:
-            print(f'\rProcessing{dots}', end='', flush=True)
-            time.sleep(0.5)
-            
-            
-
-def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool):
-    global done 
-    image = cv.imread(img_path)
-    image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+colors = [
+    (47, 37, 29),  # #1D252F → (29, 37, 47)
+    (64, 52, 46),  # #2e3440 → (46, 52, 64)
+    (82, 66, 59),  # #3b4252 → (59, 66, 82)
+    (94, 76, 67),  # #434c5e → (67, 76, 94)
+    (106, 86, 76), # #4c566a → (76, 86, 106)
+    (193, 161, 129), # #81A1C1 → (129, 161, 193)
+    (244, 239, 236)  # #ECEFF4 → (236, 239, 244)
+]
 
 
 
-    pixel_values = image.reshape((-1, 3))
-    pixel_values = np.float32(pixel_values)
-    
-    k = min(max(K_val, 2), 5)
-    
-    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 300, 0.1)
-    print("Processing image")
-    animation_thread = threading.Thread(target=animate_dots)
-    animation_thread.start()
-    _, labels, centers = cv.kmeans(pixel_values, k, None, criteria, 10, cv.KMEANS_RANDOM_CENTERS)
-    done = True
-    animation_thread.join()
-    print("\nProcessing done!")
-    centers = np.uint8(centers)
-    sorted_centers = sorted(centers, key=lambda x: np.mean(x)) # type: ignore
-
-    new_values = [np.array([29, 37, 47]), np.array([46, 52, 64]), np.array([76, 86, 106]), np.array([129, 161, 193]), np.array([236, 239, 244])]
-
-    replacement_map = {i: new_values[idx] for idx, i in enumerate(np.argsort([np.mean(c) for c in sorted_centers]))}
-
-    new_image = np.array([replacement_map[label] for label in labels.flatten()])
-    new_image = new_image.reshape(image.shape).astype(np.uint8)
-
-    if blurr:
-        new_image = cv.GaussianBlur(new_image,(3,3),0)
-
-    file_name = os.path.basename(img_path)
-    print("Saving image!")
-    new_image = cv.cvtColor(new_image, cv.COLOR_RGB2BGR)
-    cv.imwrite(f"{out_path}/nord-{file_name}", new_image)
-    
+def select_file():
+    root = Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename()
+    root.destroy()
+    return file_path
 
 def main():
-    aparser = ArgumentParser(description=(
-        "This script allows you to convert any picture to a nord style. "
-        "Choose k (from 2 to 5), and specify the input image and output path."
-        " Since the image is quantized, blurr helps to soften edges of the output image."
-    ))
-    aparser.add_argument(
-        "img_path", 
-        type=Path,
-        help="Path to the input image file."
-    )
-    aparser.add_argument(
-        "--out", 
-        type=Path, 
-        default=Path(""),
-        help="Path to save the output image. Default dir is '/.'."
-    )
-    aparser.add_argument(
-        "--k", 
-        type=int, 
-        default=5, 
-        choices=range(2, 6),
-        help="Choose a value for k (from 2 to 5). Default is 5."
-    )
-    aparser.add_argument(
-        "--b", 
-        action="store_true", 
-        help="Enable blur. If not specified, blur will be disabled."
-    )
-    args = aparser.parse_args()
+    WINDOW_NAME = 'Nord Image Converter'
 
-    print(f"Processing image: {args.img_path}")
-    print(f"Saving output to: {args.out}/nord-{os.path.basename(args.img_path)}")
-    print(f"Using k = {args.k}")
-    if args.b:
-        print(f"Using blurr")
-    make_nord(img_path=args.img_path, out_path=args.out, K_val=args.k, blurr=args.b)
+    # Initialize cvui and create/open a OpenCV window.
+    cvui.init(WINDOW_NAME)
+    # Create a frame to render components to.
+    frame = np.zeros((600, 1000, 3), np.uint8)
+
+    processed_proxy_image = None
+    processed_image = None
+    blurr = [False]
+    trackbarValue = [int(0)]
+
+    color_centers = None
+
+    img_path = ""
+    out_path = ""
+    proxy_img_dir = ""
+    proxy_in_path = ""
+    proxy_out_path = ""
+
+    picker_x = 200
+    picker_y = 450
+    color_checks = [[True], [True], [True], [True], [True], [True], [True]]
+
+    while True:
+        frame[:] = (49, 52, 49)
+        cvui.text(frame, 10, 15, 'Nord Image Converter')
+
+        if cvui.button(frame, 10, 50, 'Select Image'):
+            img_path = select_file()
+            if img_path:
+                original_image = cv.imread(img_path)
+                proxy_image = cv.resize(original_image, (400, 300))
+                proxy_in_path = Path(f"./proxy-{os.path.basename(img_path)}")
+                cv.imwrite(proxy_in_path, proxy_image)
+
+        if proxy_out_path and cvui.button(frame, 150, 50, 'Process Image'):
+            out_path = Path(".")
+            _ = make_nord(img_path, out_path, color_checks, blurr[0])
+            os.remove(proxy_img_dir)
+            proxy_img_dir = ""
+            os.remove(proxy_in_path)
+            proxy_in_path = ""
+            proxy_out_path = ""
+            img_path = ""
+
+        cvui.text(frame, picker_x, picker_y - 30, 'Pick the colors (Minimum 2!)')
+
+        for i, color in enumerate(colors):
+                    color_img = np.zeros((20, 20, 3), np.uint8)
+                    color_img[:] = color
+                    cvui.image(frame, picker_x + i * 30, picker_y, color_img)
+                    cvui.checkbox(frame, picker_x + i * 31, picker_y + 25, '', color_checks[i])
+                    k = sum(checked[0] for checked in color_checks)
+                    
+
+        cvui.checkbox(frame, 290, 50, 'Blurr', blurr)
+
+        # cvui.trackbar(frame, 360, 50, 150, trackbarValue, int(1), int(5))
+
+        if img_path and cvui.button(frame, 10, picker_y, 'Preview Image') and k >= 2:
+            proxy_out_path = Path(".")
+            proxy_img_dir = make_nord(proxy_in_path, proxy_out_path, color_checks, blurr[0], proxy = True)
+    
+        if proxy_out_path:
+            processed_proxy_image = cv.imread(proxy_img_dir)
+            cvui.image(frame, 500, 100, processed_proxy_image)
+
+        if img_path:
+            original_image = cv.imread(img_path)
+            proxy_image = cv.resize(original_image, (400, 300))
+            cvui.image(frame, 10, 100, proxy_image)
+
+        if processed_image is not None:
+            cvui.image(frame, 420, 100, processed_image)
+
+        if cvui.button(frame, 350, 50, 'Exit'):
+            if proxy_in_path:
+                os.remove(proxy_in_path)
+            if proxy_img_dir:
+                os.remove(proxy_img_dir)
+            break
+
+        cvui.imshow(WINDOW_NAME, frame)
+
+        if cv.waitKey(20) == 27 :
+            break
 
 
 if __name__ == "__main__":
     main()
+    
