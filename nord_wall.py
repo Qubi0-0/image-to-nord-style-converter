@@ -107,6 +107,8 @@ def main():
             cvui.image(frame, 420, 100, processed_image)
 
         if cvui.button(frame, 420, picker_y, 'Exit'):
+            os.remove(proxy_in_path)
+            os.remove(proxy_img_dir)
             break
 
         cvui.imshow(WINDOW_NAME, frame)
