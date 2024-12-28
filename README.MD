@@ -1,6 +1,6 @@
 # Nord Image Converter
 
-This script allows you to convert any picture to a nord style. Choose colors and see preview before finall image! Since the image is quantized, blur helps to soften edges of the output image. Be aware that the final image might differ from preview since preview is resised version of your full image!
+This script allows you to convert any picture to a nord style. Choose colors and see preview before finall image! Since the image is quantized, blur helps to soften edges of the output image. Be aware that the final image might differ from preview since preview is resized version of your full image!
 
 ## UI
 
