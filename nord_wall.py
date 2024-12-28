@@ -6,10 +6,21 @@ import numpy as np
 from tkinter import Tk, filedialog
 import os
 
-
 sys.path.append(str(Path(__file__).resolve().parent / 'scripts'))
 
 from make_nord import make_nord
+
+colors = [
+    (64, 52, 46),  # #2e3440 → (46, 52, 64)
+    (82, 66, 59),  # #3b4252 → (59, 66, 82)
+    (94, 76, 67),  # #434c5e → (67, 76, 94)
+    (106, 86, 76), # #4c566a → (76, 86, 106)
+    (47, 37, 29),  # #1D252F → (29, 37, 47)
+    (193, 161, 129), # #81A1C1 → (129, 161, 193)
+    (244, 239, 236)  # #ECEFF4 → (236, 239, 244)
+]
+
+
 
 def select_file():
     root = Tk()
@@ -39,6 +50,10 @@ def main():
     proxy_in_path = ""
     proxy_out_path = ""
 
+    picker_x = 200
+    picker_y = 450
+    color_checks = [False] * len(colors)
+
 
     while True:
         frame[:] = (49, 52, 49)
@@ -64,6 +79,13 @@ def main():
             proxy_out_path = ""
             img_path = ""
 
+        cvui.text(frame, picker_x, picker_y - 30, 'Pick the colors')
+
+        for i, color in enumerate(colors):
+                    color_img = np.zeros((20, 20, 3), np.uint8)
+                    color_img[:] = color
+                    cvui.image(frame, picker_x + i * 30, picker_y, color_img)
+                    cvui.checkbox(frame, picker_x + i * 31, picker_y + 25, '', color_checks, i)
 
         cvui.checkbox(frame, 290, 50, 'Blurr', blurr)
 

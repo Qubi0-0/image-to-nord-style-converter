@@ -2,3 +2,4 @@
 out/
 images/
 scripts/__pycache__
+proxy*
