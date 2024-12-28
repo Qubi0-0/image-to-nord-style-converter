@@ -45,7 +45,7 @@ def make_nord(img_path: Path, out_path: Path, K_val: int, blurr: bool):
     print("Processing image")
     animation_thread = threading.Thread(target=animate_dots)
     animation_thread.start()
-    _, labels, centers = cv.kmeans(pixel_values, k, None, criteria, 10, cv.KMEANS_RANDOM_CENTERS)
+    _, labels, centers = cv.kmeans(pixel_values, k, None, criteria, 10, cv.KMEANS_PP_CENTERS)
     done = True
     animation_thread.join()
     print("\nProcessing done!")
