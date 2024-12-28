@@ -37,7 +37,7 @@ This script allows you to convert any picture to a nord style. Choose colors and
 - NumPy
 - cvui
 
-Or install them as you wish :D
+Install them as you wish :D
 
 ## Installation
 
