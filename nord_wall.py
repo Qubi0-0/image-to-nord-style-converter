@@ -66,7 +66,7 @@ def main():
                 proxy_in_path = Path(f"./proxy-{os.path.basename(img_path)}")
                 cv.imwrite(proxy_in_path, proxy_image)
 
-        if proxy_out_path and cvui.button(frame, 150, 50, 'Save Image'):
+        if proxy_out_path and cvui.button(frame, 150, 50, 'Process Image'):
             out_path = Path(".")
             _ = make_nord(img_path, out_path, color_checks, blurr[0])
             os.remove(proxy_img_dir)
@@ -90,7 +90,7 @@ def main():
 
         # cvui.trackbar(frame, 360, 50, 150, trackbarValue, int(1), int(5))
 
-        if img_path and cvui.button(frame, 10, picker_y, 'Process Image') and k >= 2:
+        if img_path and cvui.button(frame, 10, picker_y, 'Preview Image') and k >= 2:
             proxy_out_path = Path(".")
             proxy_img_dir = make_nord(proxy_in_path, proxy_out_path, color_checks, blurr[0], proxy = True)
     
@@ -107,8 +107,10 @@ def main():
             cvui.image(frame, 420, 100, processed_image)
 
         if cvui.button(frame, 420, picker_y, 'Exit'):
-            os.remove(proxy_in_path)
-            os.remove(proxy_img_dir)
+            if proxy_in_path:
+                os.remove(proxy_in_path)
+            if proxy_img_dir:
+                os.remove(proxy_img_dir)
             break
 
         cvui.imshow(WINDOW_NAME, frame)
