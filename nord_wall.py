@@ -106,7 +106,7 @@ def main():
         if processed_image is not None:
             cvui.image(frame, 420, 100, processed_image)
 
-        if cvui.button(frame, 420, picker_y, 'Exit'):
+        if cvui.button(frame, 350, 50, 'Exit'):
             if proxy_in_path:
                 os.remove(proxy_in_path)
             if proxy_img_dir:
