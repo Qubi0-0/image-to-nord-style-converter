@@ -20,6 +20,8 @@ This script allows you to convert any picture to a nord style. Choose colors and
   <img src="showcase/nord-nose.jpg" width="45%" />
 </p>
 
+![alt text](showcase/nord-lion.jpg)
+
 ## Used Colors
 
 - `#2e3440` → `(46, 52, 64)`

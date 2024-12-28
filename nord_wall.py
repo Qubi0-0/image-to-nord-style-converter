@@ -69,12 +69,9 @@ def main():
         if proxy_out_path and cvui.button(frame, 150, 50, 'Process Image'):
             out_path = Path(".")
             _ = make_nord(img_path, out_path, color_checks, blurr[0])
-            os.remove(proxy_img_dir)
-            proxy_img_dir = ""
             os.remove(proxy_in_path)
             proxy_in_path = ""
             proxy_out_path = ""
-            img_path = ""
 
         cvui.text(frame, picker_x, picker_y - 30, 'Pick the colors (Minimum 2!)')
 
