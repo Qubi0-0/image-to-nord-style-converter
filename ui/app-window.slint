@@ -1,4 +1,4 @@
-import { Button, VerticalBox, TextEdit, LineEdit, ComboBox } from "std-widgets.slint";
+import { Button, VerticalBox, TextEdit, LineEdit, ComboBox, CheckBox, HorizontalBox } from "std-widgets.slint";
 import { Buttoner, CalculateLineEdit, CalculateText } from "my-components.slint";
 
 export struct Row  {
@@ -19,7 +19,7 @@ export component AppWindow inherits Window {
     in-out property <int> active-tab: 0;
 
     preferred-height: 380px;
-    min-width: 350px;
+    min-width: 550px;
 
     icon: @image-url("icons/graph.svg");
     background: @linear-gradient(135deg, first_back 15%, second_back 50%, third_back 100%);
@@ -42,11 +42,119 @@ export component AppWindow inherits Window {
         }
 
         VerticalLayout {
-            preferred-height: 200px;
-            Rectangle {
-                clip: true;
+            min-width: parent.width;
+            HorizontalLayout {
+                Rectangle {
+                    background: red;
+                }
+
+                Rectangle {
+                    background: blue;
+                }
             }
 
+            property <length> box_width: 30px;
+
+            HorizontalLayout {
+                height: 35px;
+                spacing: 5px;
+                padding: 5px;
+                Rectangle {
+                    width: box_width;
+                    background: #2e3440;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #3b4252;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #434c5e;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #4c566a;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #1D252F;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #81A1C1;
+                }
+
+                Rectangle {
+                    width: box_width;
+                    background: #ECEFF4;
+                }
+
+                Rectangle {
+                    width: 60px;
+                }
+
+                Buttoner {
+                    text: "Preview image";
+                }
+            }
+
+            HorizontalLayout {
+                padding: 5px;
+                spacing: 5px;
+                height: 30px;
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+
+                CheckBox {
+                    width: box_width;
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 1px;
+                Buttoner {
+                    border-radius: 1px;
+
+                    text: "Save Image";
+                }
+
+                Buttoner {
+                    border-radius: 1px;
+                    text: "Load Image";
+                }
+
+                Buttoner {
+                    border-radius: 1px;
+
+                    text: "Exit";
+                }
+            }
             // tab_bar := HorizontalLayout {
             //     // spacing: 1px;
             //     Buttoner {
@@ -74,5 +182,10 @@ export component AppWindow inherits Window {
             //     }
             // }
         }
+    }
+}
+
+export component color_box inherits CheckBox {
+    toggled => {
     }
 }
