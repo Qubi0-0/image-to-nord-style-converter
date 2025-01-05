@@ -1,12 +1,10 @@
 import { Button, VerticalBox, TextEdit, LineEdit, ComboBox, CheckBox, HorizontalBox } from "std-widgets.slint";
 import { Buttoner, CalculateLineEdit, CalculateText } from "my-components.slint";
 
-export struct Row  {
-    name: string,
-    value: float,
-    checked: bool,
-    timespan: string,
-    to_delete: bool,
+
+export component ColorBox inherits CheckBox {
+    toggled => {
+    }
 }
 
 export component AppWindow inherits Window {
@@ -18,10 +16,10 @@ export component AppWindow inherits Window {
 
     in-out property <int> active-tab: 0;
 
-    preferred-height: 380px;
+    preferred-height: 420px;
     min-width: 550px;
+    min-height: 400px;
 
-    icon: @image-url("icons/graph.svg");
     background: @linear-gradient(135deg, first_back 15%, second_back 50%, third_back 100%);
     GridLayout {
         Row {
@@ -44,12 +42,14 @@ export component AppWindow inherits Window {
         VerticalLayout {
             min-width: parent.width;
             HorizontalLayout {
-                Rectangle {
-                    background: red;
+                padding: 2px;
+                spacing: 10px;
+                Image {
+                    source: @image-url("../showcase/nord-lion.jpg");
                 }
 
-                Rectangle {
-                    background: blue;
+                Image {
+                    source: @image-url("../showcase/nord-ubuntu.jpg");
                 }
             }
 
@@ -59,6 +59,11 @@ export component AppWindow inherits Window {
                 height: 35px;
                 spacing: 5px;
                 padding: 5px;
+                Rectangle {
+                    width: box_width;
+                    background: #1D252F;
+                }
+
                 Rectangle {
                     width: box_width;
                     background: #2e3440;
@@ -81,11 +86,6 @@ export component AppWindow inherits Window {
 
                 Rectangle {
                     width: box_width;
-                    background: #1D252F;
-                }
-
-                Rectangle {
-                    width: box_width;
                     background: #81A1C1;
                 }
 
@@ -98,94 +98,62 @@ export component AppWindow inherits Window {
                     width: 60px;
                 }
 
-                Buttoner {
+                preview_button := Buttoner {
                     text: "Preview image";
                 }
             }
 
             HorizontalLayout {
+                padding-left: 12px;
                 padding: 5px;
                 spacing: 5px;
                 height: 30px;
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
 
-                CheckBox {
+                ColorBox {
                     width: box_width;
                 }
             }
 
             HorizontalLayout {
                 spacing: 1px;
-                Buttoner {
+                save_button := Buttoner {
                     border-radius: 1px;
-
                     text: "Save Image";
                 }
 
-                Buttoner {
+                load_button := Buttoner {
                     border-radius: 1px;
                     text: "Load Image";
                 }
 
-                Buttoner {
+                exit_button := Buttoner {
                     border-radius: 1px;
-
                     text: "Exit";
                 }
             }
-            // tab_bar := HorizontalLayout {
-            //     // spacing: 1px;
-            //     Buttoner {
-            //         border-radius: 1px;
-            //         text: "Add new";
-            //         clicked => {
-            //             root.active-tab = 0;
-            //         }
-            //     }
-
-            //     Buttoner {
-            //         border-radius: 1px;
-            //         text: "Calculate";
-            //         clicked => {
-            //             root.active-tab = 1;
-            //         }
-            //     }
-
-            //     Buttoner {
-            //         border-radius: 1px;
-            //         text: "Fuel cost  ";
-            //         clicked => {
-            //             root.active-tab = 2;
-            //         }
-            //     }
-            // }
         }
-    }
-}
-
-export component color_box inherits CheckBox {
-    toggled => {
     }
 }
