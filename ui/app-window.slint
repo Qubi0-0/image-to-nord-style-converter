@@ -3,8 +3,12 @@ import { Buttoner, CalculateLineEdit, CalculateText } from "my-components.slint"
 
 
 export component ColorBox inherits CheckBox {
-    toggled => {
+    in-out property <bool> isSelected: false;
+    width: 30px;
+    toggled() => {
+        isSelected = self.checked;
     }
+    text: self.checked ? "1" : "0";
 }
 
 export component AppWindow inherits Window {
@@ -16,6 +20,16 @@ export component AppWindow inherits Window {
 
     in-out property <int> active-tab: 0;
 
+    in-out property <string> input_img_dir;
+    in-out property <string> input_proxy_img_dir;
+    in-out property <string> output_img_dir;
+    in-out property <string> output_proxy_img_dir;
+
+    callback load-image(string);
+    callback save-image(string);
+    callback preview-image(string);
+    callback pick-colors([bool]);
+    in-out property <[bool]> selection: [false, false, false, false, false, false, false];
     preferred-height: 420px;
     min-width: 550px;
     min-height: 400px;
@@ -48,8 +62,13 @@ export component AppWindow inherits Window {
                     source: @image-url("../showcase/nord-lion.jpg");
                 }
 
-                Image {
-                    source: @image-url("../showcase/nord-ubuntu.jpg");
+                // Image {
+                //     source: @image-url("../showcase/nord-ubuntu.jpg");
+                // }
+
+                    CalculateText {
+                    width: 100px;
+                    text_value: root.selection[0] ? "true" : "false";
                 }
             }
 
@@ -109,31 +128,31 @@ export component AppWindow inherits Window {
                 spacing: 5px;
                 height: 30px;
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[0];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[1];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[2];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[3];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[4];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[5];
                 }
 
                 ColorBox {
-                    width: box_width;
+                    isSelected: root.selection[6];
                 }
             }
 
