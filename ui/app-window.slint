@@ -1,0 +1,78 @@
+import { Button, VerticalBox, TextEdit, LineEdit, ComboBox } from "std-widgets.slint";
+import { Buttoner, CalculateLineEdit, CalculateText } from "my-components.slint";
+
+export struct Row  {
+    name: string,
+    value: float,
+    checked: bool,
+    timespan: string,
+    to_delete: bool,
+}
+
+export component AppWindow inherits Window {
+    property <color> first_back: #242a3b;
+    property <color> second_back: #39516e;
+    property <color> third_back: #3c75aa;
+    property <color> font_color: #ffffffcc;
+    property <length> border_radius_val: 10px;
+
+    in-out property <int> active-tab: 0;
+
+    preferred-height: 380px;
+    min-width: 350px;
+
+    icon: @image-url("icons/graph.svg");
+    background: @linear-gradient(135deg, first_back 15%, second_back 50%, third_back 100%);
+    GridLayout {
+        Row {
+            HorizontalLayout { // Title 
+                padding: 3px;
+                spacing: root.width / 6;
+                height: 60px;
+                Text {
+                    text: "Image Converter";
+                    preferred-height: root.height / 3;
+                    color: font_color;
+                    font-italic: true;
+                    font-size: 35px;
+                    vertical-alignment: top;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+
+        VerticalLayout {
+            preferred-height: 200px;
+            Rectangle {
+                clip: true;
+            }
+
+            // tab_bar := HorizontalLayout {
+            //     // spacing: 1px;
+            //     Buttoner {
+            //         border-radius: 1px;
+            //         text: "Add new";
+            //         clicked => {
+            //             root.active-tab = 0;
+            //         }
+            //     }
+
+            //     Buttoner {
+            //         border-radius: 1px;
+            //         text: "Calculate";
+            //         clicked => {
+            //             root.active-tab = 1;
+            //         }
+            //     }
+
+            //     Buttoner {
+            //         border-radius: 1px;
+            //         text: "Fuel cost  ";
+            //         clicked => {
+            //             root.active-tab = 2;
+            //         }
+            //     }
+            // }
+        }
+    }
+}
